@@ -1,0 +1,98 @@
+[
+  {
+    "test_id": "t-1001",
+    "stream": "7eleven-android",
+    "build_id": "nightly-2026-07-09",
+    "test_name": "checkout_apply_promo_code",
+    "error_message": "NoSuchElementException: Unable to locate element with id 'btn_checkout_apply'",
+    "stack_trace": "io.appium.java_client.NoSuchElementException: Unable to locate element with id 'btn_checkout_apply'\n at CheckoutPage.applyPromo(CheckoutPage.java:88)",
+    "dom_snippet": "<Button resource-id='btn_checkout_apply_v2' text='Apply' />",
+    "screen_name": "CheckoutScreen",
+    "session_url": "https://app-automate.browserstack.com/sessions/sim-1001",
+    "duration_ms": 4210
+  },
+  {
+    "test_id": "t-1002",
+    "stream": "7eleven-android",
+    "build_id": "nightly-2026-07-09",
+    "test_name": "checkout_apply_promo_code_v2",
+    "error_message": "NoSuchElementException: Unable to locate element with id 'btn_checkout_apply'",
+    "stack_trace": "io.appium.java_client.NoSuchElementException: Unable to locate element with id 'btn_checkout_apply'\n at CheckoutPage.applyPromo(CheckoutPage.java:88)",
+    "dom_snippet": "<Button resource-id='btn_checkout_apply_v2' text='Apply' />",
+    "screen_name": "CheckoutScreen",
+    "session_url": "https://app-automate.browserstack.com/sessions/sim-1002",
+    "duration_ms": 3980
+  },
+  {
+    "test_id": "t-1010",
+    "stream": "7eleven-android",
+    "build_id": "nightly-2026-07-09",
+    "test_name": "loyalty_points_balance_loads",
+    "error_message": "TimeoutException: element not visible in time waiting for 'loyalty_balance_label'",
+    "stack_trace": "org.openqa.selenium.TimeoutException: element not visible in time waiting for 'loyalty_balance_label'\n at LoyaltyPage.waitForBalance(LoyaltyPage.java:41)",
+    "dom_snippet": "<TextView resource-id='loyalty_balance_label' text='' />",
+    "screen_name": "LoyaltyScreen",
+    "session_url": "https://app-automate.browserstack.com/sessions/sim-1010",
+    "duration_ms": 9012
+  },
+  {
+    "test_id": "t-1020",
+    "stream": "7eleven-android",
+    "build_id": "nightly-2026-07-09",
+    "test_name": "store_locator_search_crashes",
+    "error_message": "500 Internal Server Error from /api/v2/stores/search, app crashed with NullPointerException",
+    "stack_trace": "java.lang.NullPointerException: Attempt to invoke virtual method on a null object reference\n at StoreLocatorActivity.onSearchResults(StoreLocatorActivity.java:212)",
+    "dom_snippet": "<FrameLayout id='crash_dialog' />",
+    "screen_name": "StoreLocatorScreen",
+    "session_url": "https://app-automate.browserstack.com/sessions/sim-1020",
+    "duration_ms": 2100
+  },
+  {
+    "test_id": "t-1030",
+    "stream": "7eleven-android",
+    "build_id": "nightly-2026-07-09",
+    "test_name": "rewards_redeem_flow_redesigned",
+    "error_message": "AssertionError: expected screen 'RewardsRedeemConfirm' but found 'RewardsRedeemSummaryV2'",
+    "stack_trace": "AssertionError at RewardsPage.verifyRedeemScreen(RewardsPage.java:150)",
+    "dom_snippet": "<View testID='rewards_redeem_summary_v2'><Text>Choose your reward tier</Text></View>",
+    "screen_name": "RewardsRedeemSummaryV2",
+    "session_url": "https://app-automate.browserstack.com/sessions/sim-1030",
+    "duration_ms": 5320
+  },
+  {
+    "test_id": "t-1040",
+    "stream": "7eleven-android",
+    "build_id": "nightly-2026-07-09",
+    "test_name": "login_with_test_account_seven",
+    "error_message": "Login failed: test account 'qa_auto_07@test.com' locked, invalid promo code TESTPROMO2025 rejected",
+    "stack_trace": "LoginPage.assertLoginSuccess(LoginPage.java:64): expected dashboard, got error toast",
+    "dom_snippet": "<Toast text='Account locked. Contact support.' />",
+    "screen_name": "LoginScreen",
+    "session_url": "https://app-automate.browserstack.com/sessions/sim-1040",
+    "duration_ms": 3300
+  },
+  {
+    "test_id": "t-1050",
+    "stream": "7eleven-android",
+    "build_id": "nightly-2026-07-09",
+    "test_name": "product_detail_add_to_cart_flaky",
+    "error_message": "StaleElementReferenceException: element is not attached to the page document",
+    "stack_trace": "org.openqa.selenium.StaleElementReferenceException at ProductDetailPage.addToCart(ProductDetailPage.java:73)",
+    "dom_snippet": "<Button resource-id='btn_add_to_cart' />",
+    "screen_name": "ProductDetailScreen",
+    "session_url": "https://app-automate.browserstack.com/sessions/sim-1050",
+    "duration_ms": 2750
+  },
+  {
+    "test_id": "t-1060",
+    "stream": "7eleven-android",
+    "build_id": "nightly-2026-07-09",
+    "test_name": "session_driver_disconnect",
+    "error_message": "Session not created: device unresponsive, driver disconnected mid-test",
+    "stack_trace": "WebDriverException: session not created\n at DriverFactory.createSession(DriverFactory.java:29)",
+    "dom_snippet": "",
+    "screen_name": null,
+    "session_url": "https://app-automate.browserstack.com/sessions/sim-1060",
+    "duration_ms": 500
+  }
+]
