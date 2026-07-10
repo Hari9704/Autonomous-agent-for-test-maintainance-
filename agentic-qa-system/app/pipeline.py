@@ -114,7 +114,10 @@ async def _execute_run(report: RunReport, request: RunRequest) -> None:
     finally:
         report.metrics.duration_seconds = round(time.monotonic() - started, 3)
         report.completed_at = report.completed_at or _iso_now()
-        _persist_report(report)
+        # Report serialization + disk write is blocking I/O; run it off the
+        # event loop so it doesn't stall other concurrently-running cluster
+        # tasks sharing this asyncio loop.
+        await asyncio.to_thread(_persist_report, report)
 
 
 async def _run_cluster(cluster: FailureCluster, stream: str) -> ClusterResult:

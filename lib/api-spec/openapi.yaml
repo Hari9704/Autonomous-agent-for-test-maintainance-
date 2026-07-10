@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: access
+    description: Paid MCP / API access provisioning (mock checkout, no real payment processor)
 paths:
   /healthz:
     get:
@@ -24,7 +26,64 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /access/purchase:
+    post:
+      operationId: purchaseAccess
+      tags: [access]
+      summary: Purchase MCP / API access
+      description: >
+        Simulated one-time $5 checkout (no real payment processor is called).
+        Instantly issues an API key that gates the MCP server and the sandbox
+        classification endpoint.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccessPurchaseInput"
+      responses:
+        "201":
+          description: Access granted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessGrant"
+        "400":
+          description: Invalid input
+  /access/classify:
+    post:
+      operationId: classifySample
+      tags: [access]
+      summary: Run the live 3-tier classifier against a sample failure message
+      description: >
+        Requires a valid API key in the `x-api-key` header. Demonstrates the
+        same tier-1 regex / tier-2 cache / fallback classification logic used
+        by the MCP tool of the same name.
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClassifySampleInput"
+      responses:
+        "200":
+          description: Classification result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClassificationResult"
+        "401":
+          description: Missing or invalid API key
+        "400":
+          description: Invalid input
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
   schemas:
     HealthStatus:
       type: object
@@ -33,4 +92,62 @@ components:
           type: string
       required:
         - status
+    AccessPurchaseInput:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          minLength: 3
+        plan:
+          type: string
+          default: mcp_access
+    AccessGrant:
+      type: object
+      required:
+        - id
+        - email
+        - apiKey
+        - plan
+        - amountCents
+        - createdAt
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        apiKey:
+          type: string
+        plan:
+          type: string
+        amountCents:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+    ClassifySampleInput:
+      type: object
+      required:
+        - errorMessage
+      properties:
+        errorMessage:
+          type: string
+          minLength: 1
+    ClassificationResult:
+      type: object
+      required:
+        - category
+        - tier
+        - confidence
+        - reasoning
+      properties:
+        category:
+          type: string
+        tier:
+          type: string
+        confidence:
+          type: number
+        reasoning:
+          type: string
 
