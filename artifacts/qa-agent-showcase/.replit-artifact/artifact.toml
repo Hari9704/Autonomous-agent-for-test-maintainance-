@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Agentic QA Showcase"
+version = "1.0.0"
+id = "artifacts/qa-agent-showcase"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23793
+
+[services.development]
+run = "pnpm --filter @workspace/qa-agent-showcase run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/qa-agent-showcase", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/qa-agent-showcase/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23793"
+BASE_PATH = "/"
