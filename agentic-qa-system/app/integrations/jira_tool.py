@@ -14,7 +14,7 @@ Docs: https://developer.atlassian.com/cloud/jira/platform/rest/v3/
 from __future__ import annotations
 
 import logging
-import time
+import uuid
 
 import httpx
 
@@ -81,7 +81,10 @@ class JiraAdapter(ToolAdapter):
             return self._simulated_issue(summary)
 
     def _simulated_issue(self, summary: str) -> dict:
-        fake_id = int(time.time()) % 10000
+        # uuid4-derived, not time-derived: parallel cluster execution can
+        # file multiple simulated tickets within the same second, and a
+        # time.time()-based id would collide and look like accidental dedup.
+        fake_id = uuid.uuid4().int % 90000 + 1000
         issue_key = f"{self._project_key}-{fake_id}"
         return {
             "simulated": True,

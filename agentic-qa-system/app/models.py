@@ -155,6 +155,7 @@ class ClusterCost(BaseModel):
     input_tokens: int = 0
     output_tokens: int = 0
     cache_hits: int = 0
+    semantic_cache_hits: int = 0
     cache_read_input_tokens: int = 0
     estimated_cost_usd: float = 0.0
 

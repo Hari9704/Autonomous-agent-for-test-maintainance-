@@ -43,7 +43,10 @@ def get_run(run_id: str) -> RunReport | None:
 
 
 async def start_run(request: RunRequest) -> RunReport:
-    build_id = request.build_id or f"build-{int(time.time())}"
+    # uuid4 suffix, not a bare timestamp: two runs started without an
+    # explicit build_id in the same second would otherwise get the same
+    # default id and trip the idempotency guard as a false conflict.
+    build_id = request.build_id or f"build-{uuid.uuid4().hex[:10]}"
     store = get_state_store()
 
     if store.is_build_already_running(build_id, request.stream.value):
@@ -65,7 +68,9 @@ async def _execute_run(report: RunReport, request: RunRequest) -> None:
         if request.report_records is not None:
             records = parse_records(request.report_records)
         else:
-            report_path = request.report_path or "data/sample_reports/nightly_failures_sample.json"
+            # Relative to the data directory (see `_resolve_within_data_dir`
+            # in report_parser.py), not the process cwd.
+            report_path = request.report_path or "sample_reports/nightly_failures_sample.json"
             records = parse_report(report_path)
 
         records = [r for r in records if r.stream == request.stream]
@@ -140,6 +145,7 @@ def _aggregate_metrics(report: RunReport) -> None:
     for cluster_result in report.clusters:
         metrics.llm_calls += cluster_result.cost.llm_calls
         metrics.cache_hits += cluster_result.cost.cache_hits
+        metrics.semantic_cache_hits += cluster_result.cost.semantic_cache_hits
         metrics.estimated_cost_usd += cluster_result.cost.estimated_cost_usd
         category = cluster_result.classification.category.value
         metrics.category_counts[category] = metrics.category_counts.get(category, 0) + cluster_result.cluster_size
@@ -153,7 +159,7 @@ def _build_action_contract(report: RunReport) -> AgentActionContract:
         if c.fix_result and c.fix_result.pr_url:
             contract.prs_opened.append(c.fix_result.pr_url)
         if c.test_draft and c.test_draft.pr_url:
-            contract.prs_opened.append(c.test_draft.pr_url)
+            contract.tests_drafted.append(c.test_draft.pr_url)
         if c.bug_ticket and c.bug_ticket.filed and c.bug_ticket.issue_url:
             contract.bugs_filed.append(c.bug_ticket.issue_url)
         if c.escalation:

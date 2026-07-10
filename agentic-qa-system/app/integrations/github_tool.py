@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import base64
 import logging
-import time
+import uuid
 
 import httpx
 
@@ -92,7 +92,11 @@ class GitHubAdapter(ToolAdapter):
 
     @staticmethod
     def _simulated_pr(branch_name: str, pr_title: str) -> dict:
-        fake_number = int(time.time()) % 10000
+        # A plain time.time()-derived id collides whenever multiple clusters
+        # open "PRs" within the same second (common with parallel cluster
+        # execution), producing misleading duplicate PR numbers in the
+        # action contract. uuid4 keeps it unique per call.
+        fake_number = uuid.uuid4().int % 90000 + 1000
         return {
             "simulated": True,
             "pr_url": f"https://github.com/simulated/repo/pull/{fake_number}",

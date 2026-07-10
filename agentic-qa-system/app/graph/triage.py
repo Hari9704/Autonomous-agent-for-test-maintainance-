@@ -87,7 +87,7 @@ def triage_node(state: ClusterState) -> dict:
     semantic_hit = semantic_cache.get(rep.error_message, namespace="classification")
     if semantic_hit:
         logger.info("[triage] cluster=%s TIER3-semantic hit -> %s", cluster.signature[:8], semantic_hit["category"])
-        tracker.record_free_hit()
+        tracker.record_free_hit(semantic=True)
         classification = Classification(
             category=ClassificationCategory(semantic_hit["category"]),
             confidence=semantic_hit.get("confidence", 0.7),

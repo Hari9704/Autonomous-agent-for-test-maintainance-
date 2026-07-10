@@ -13,15 +13,38 @@ from pathlib import Path
 
 import pandas as pd
 
+from app.config import settings
 from app.models import FailureRecord, Stream
 
 REQUIRED_COLUMNS = ["test_id", "stream", "build_id", "test_name", "error_message"]
 
+# Report files are only ever meant to come from the trusted "GitHub Actions
+# -> S3 -> report" drop location this stands in for; the API accepts a path
+# rather than an upload for POC simplicity, so it must not be usable to read
+# arbitrary files on the host (path traversal / local file disclosure).
+MAX_REPORT_BYTES = 10 * 1024 * 1024
+
+
+def _resolve_within_data_dir(path: str | Path) -> Path:
+    data_root = Path(settings.storage.data_dir).resolve()
+    resolved = (data_root / path).resolve() if not Path(path).is_absolute() else Path(path).resolve()
+    try:
+        resolved.relative_to(data_root)
+    except ValueError:
+        raise ValueError(
+            f"Report path must live under the data directory ({data_root}); got: {path}"
+        ) from None
+    return resolved
+
 
 def parse_report(path: str | Path) -> list[FailureRecord]:
-    path = Path(path)
+    path = _resolve_within_data_dir(path)
     if not path.exists():
         raise FileNotFoundError(f"Failure report not found: {path}")
+    if not path.is_file():
+        raise ValueError(f"Failure report path is not a file: {path}")
+    if path.stat().st_size > MAX_REPORT_BYTES:
+        raise ValueError(f"Failure report exceeds max size of {MAX_REPORT_BYTES} bytes: {path}")
 
     if path.suffix.lower() in (".xlsx", ".xls"):
         df = pd.read_excel(path)

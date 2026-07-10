@@ -11,6 +11,7 @@ Tier-2 cache in `state_store.py`.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import threading
@@ -59,7 +60,12 @@ class SemanticResponseCache:
         return json.loads(docs[0])
 
     def set(self, query: str, namespace: str, response: dict) -> None:
-        doc_id = f"{namespace}:{hash(query)}"
+        # Python's builtin hash() is salted per-process (PYTHONHASHSEED),
+        # so the same query would get a different doc_id after every
+        # restart -- silently disabling de-dup and letting the collection
+        # grow unbounded with duplicate entries. sha256 is stable.
+        digest = hashlib.sha256(query.encode()).hexdigest()[:24]
+        doc_id = f"{namespace}:{digest}"
         self._collection.upsert(
             ids=[doc_id],
             documents=[json.dumps(response)],

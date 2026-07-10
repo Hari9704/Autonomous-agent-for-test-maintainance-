@@ -1,0 +1,2 @@
+- [Python deps: avoid sentence-transformers](python-embeddings-deps.md) — it breaks uv dependency resolution here; use Chroma's bundled local embedding function instead.
+- [Simulated-adapter fake IDs must be uuid-based, not time-based](simulated-adapter-fake-ids.md) — time.time()-derived fake PR/ticket numbers collide under concurrent/parallel execution.

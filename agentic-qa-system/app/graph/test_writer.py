@@ -4,7 +4,7 @@ test skeleton grounded in KB_FUNCTIONAL_DOCS and opens a draft PR."""
 from __future__ import annotations
 
 import logging
-import time
+import uuid
 
 from app.cost.optimizer import enforce_json_only
 from app.graph.state import ClusterState
@@ -38,7 +38,7 @@ def test_writer_node(state: ClusterState) -> dict:
     test_code = payload.get("test_code", "")
 
     github = get_github_adapter()
-    branch_name = f"agentic-qa/test-draft-{cluster.signature[:8]}-{int(time.time())}"
+    branch_name = f"agentic-qa/test-draft-{cluster.signature[:8]}-{uuid.uuid4().hex[:8]}"
     pr = github.open_pull_request(
         branch_name=branch_name,
         file_path=file_path,

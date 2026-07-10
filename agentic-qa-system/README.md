@@ -112,6 +112,9 @@ curl -X POST http://localhost:$PORT/knowledge-bases/seed
 curl -X POST http://localhost:$PORT/runs -H 'Content-Type: application/json' \
   -d '{"stream": "7eleven-android"}'
 curl http://localhost:$PORT/runs/<run_id>
+
+# report_path (if you pass one instead of the bundled sample) is resolved
+# relative to agentic-qa-system/data/ and cannot escape that directory.
 ```
 
 Or run the whole pipeline once from the CLI, no server needed:

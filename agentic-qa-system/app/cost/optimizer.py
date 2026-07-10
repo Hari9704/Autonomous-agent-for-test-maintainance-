@@ -50,10 +50,15 @@ class CostTracker:
         self.cost.estimated_cost_usd += price_for(tier, llm_response)
         self.cost.estimated_cost_usd = round(self.cost.estimated_cost_usd, 8)
 
-    def record_free_hit(self) -> None:
-        """Tier-1 rule match or Tier-2 exact cache hit -- zero LLM spend,
-        but still worth counting as a cache hit for the KB-growth story."""
+    def record_free_hit(self, *, semantic: bool = False) -> None:
+        """Tier-1 rule match, Tier-2 exact cache hit, or a rule-based
+        escalation lookup -- zero LLM spend either way. `semantic=True`
+        additionally counts it as a semantic-cache hit (Tier-3a) so the two
+        are distinguishable in the run report instead of being merged into
+        one generic "cache_hits" bucket."""
         self.cost.cache_hits += 1
+        if semantic:
+            self.cost.semantic_cache_hits += 1
 
 
 def enforce_json_only(schema_hint: str) -> str:
