@@ -129,20 +129,15 @@ export default function GetMCP() {
                 <Terminal className="w-5 h-5 text-primary" />
                 MCP Client Config
               </h3>
-              <p className="text-sm text-muted-foreground">Add this to your Claude Desktop or Cursor MCP configuration to use the agent natively.</p>
+              <p className="text-sm text-muted-foreground">Add this to your Claude Desktop or Cursor MCP configuration to use the agent natively. Both support remote Streamable HTTP servers with custom headers.</p>
               <div className="relative group">
                 <pre className="p-4 bg-muted/30 border border-border rounded-lg font-mono text-xs overflow-x-auto text-foreground/80">
 {`{
   "mcpServers": {
     "qa-agent": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sse",
-        "${baseUrl}/api/mcp"
-      ],
-      "env": {
-        "X_API_KEY": "${purchaseMutation.data?.apiKey}"
+      "url": "${baseUrl}/api/mcp",
+      "headers": {
+        "x-api-key": "${purchaseMutation.data?.apiKey}"
       }
     }
   }
