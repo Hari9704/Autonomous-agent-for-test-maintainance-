@@ -2,3 +2,5 @@
 - [Orval zod codegen quirks](orval-zod-quirks.md) — avoid `format: email` in OpenAPI spec; import operation-named validators (e.g. `PurchaseAccessBody`), not component ref names.
 - [MCP Streamable HTTP client config](mcp-streamable-http-config.md) — correct remote MCP snippet uses `url`+`headers` fields, not `@modelcontextprotocol/server-sse` bridge.
 - [Subagent findings need verification](subagent-verification.md) — always verify explorer/architect findings against current code; encountered one false positive (N+1 singleton claim was already fixed in code).
+- [Python deps: avoid sentence-transformers](python-embeddings-deps.md) — it breaks uv dependency resolution here; use Chroma's bundled local embedding function instead.
+- [Simulated-adapter fake IDs must be uuid-based, not time-based](simulated-adapter-fake-ids.md) — time.time()-derived fake PR/ticket numbers collide under concurrent/parallel execution.
